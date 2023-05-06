@@ -1,5 +1,19 @@
+//blink_up_down
 const int green_1 = 2, green_2 = 3, red_1 = 4, red_2 = 5, yellow_1 = 6, yellow_2 = 7, blue_1 = 8, blue_2 = 9;
 const int allPins[] = {green_1, green_2, red_1, red_2, yellow_1, yellow_2, blue_1, blue_2};
+
+//no_delayBlinker
+int ledState1 = LOW;
+unsigned long previousMillis1 = 0;
+long OnTime1 = 250;
+long OffTime1 = 750;
+
+int ledState2 = LOW;
+unsigned long previousMillis2 = 0;
+long OnTime2 = 330;
+long OffTime2 = 400;
+
+//
 
 void setup() {
 
@@ -11,6 +25,41 @@ void setup() {
   }
 }
 
+void loop() {
+
+}
+
+void no_delayBlinker() {
+//LED 1
+  unsigned long currentMillis = millis();
+ 
+  if((ledState1 == HIGH) && (currentMillis - previousMillis1 >= OnTime1))
+  {
+    ledState1 = LOW;
+    previousMillis1 = currentMillis;
+    digitalWrite(green_1, ledState1);
+  }
+  else if ((ledState1 == LOW) && (currentMillis - previousMillis1 >= OffTime1))
+  {
+    ledState1 = HIGH;
+    previousMillis1 = currentMillis;
+    digitalWrite(green_1, ledState1);
+  }
+//-----------------------------------------------------------------------------------
+//LED 2
+  if((ledState2 == HIGH) && (currentMillis - previousMillis2 >= OnTime2))
+  {
+    ledState2 = LOW;
+    previousMillis2 = currentMillis;
+    digitalWrite(red_1, ledState2);
+  }
+  else if ((ledState2 == LOW) && (currentMillis - previousMillis2 >= OffTime2))
+  {
+    ledState2 = HIGH;
+    previousMillis2 = currentMillis;
+    digitalWrite(red_1, ledState2);
+  }
+}
 
 void blink_up_down() {
   static int i = 0;
@@ -35,25 +84,6 @@ void blink_up_down() {
     i = 0;
   }
  
-}
-
-void tempo_blinker() {
-  unsigned long currentMillis = millis();
- 
-  if(currentMillis - previousMillis > interval) {
-    previousMillis = currentMillis;   
-
-    if (ledState == LOW)
-      ledState = HIGH;
-    else
-      ledState = LOW;
-
-    digitalWrite(ledPin, ledState);
-  }
-}
-
-void loop() {
-  tempo_blinker();
 }
 
 void LedOn(int iled) {

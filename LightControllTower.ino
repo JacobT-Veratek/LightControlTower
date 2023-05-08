@@ -1,6 +1,6 @@
 //blink_up_down
 const int green_1 = 2, green_2 = 3, red_1 = 4, red_2 = 5, yellow_1 = 6, yellow_2 = 7, blue_1 = 8, blue_2 = 9;
-const int allPins[] = {green_1, green_2, red_1, red_2, yellow_1, yellow_2, blue_1, blue_2};
+const int allPins[8] = {green_1, green_2, red_1, red_2, yellow_1, yellow_2, blue_1, blue_2};
 
 //no_delayBlinker
 int ledState1 = LOW;
@@ -13,7 +13,16 @@ unsigned long previousMillis2 = 0;
 long OnTime2 = 330;
 long OffTime2 = 400;
 
-//
+//StartLedBlink
+unsigned long previousMillis = 0;
+int ledState = LOW;
+
+//LED ARRAY
+
+// const int ledArr[] = {
+//   uint8-t pin[8] = {};
+//   uint8-t val[8] = {};
+// }
 
 void setup() {
 
@@ -23,10 +32,20 @@ void setup() {
     pinMode(allPins[i], OUTPUT);
     digitalWrite(allPins[i], LOW);
   }
+
+  LedOn( 0 );
+  LedOff( 1 );
+  StartLedBlink( 2, 500 );
+  StartLedBlink( 3, 625 );
+  StartLedBlink( 4, 237 );
+  LedOff( 5 );
+  LedOn( 6 );
+  StartLedBlink( 7, 100 );
 }
 
 void loop() {
-
+  StartLedBlink( 3, 625 );
+  StartLedBlink( 7, 100 );
 }
 
 void no_delayBlinker() {
@@ -37,13 +56,13 @@ void no_delayBlinker() {
   {
     ledState1 = LOW;
     previousMillis1 = currentMillis;
-    digitalWrite(green_1, ledState1);
+    digitalWrite(yellow_1, ledState1);
   }
   else if ((ledState1 == LOW) && (currentMillis - previousMillis1 >= OffTime1))
   {
     ledState1 = HIGH;
     previousMillis1 = currentMillis;
-    digitalWrite(green_1, ledState1);
+    digitalWrite(yellow_1, ledState1);
   }
 //-----------------------------------------------------------------------------------
 //LED 2
@@ -62,28 +81,48 @@ void no_delayBlinker() {
 }
 
 void blink_up_down() {
-  static int i = 0;
+  static int step = 0; // step index not the led number
+  int led; // led to change
 
-  if (i <= 7) {
-    LedOn(i);
+
+  if (step <= 3) {
+    led = 2 * step;
+
+    LedOn(led);
     delay(500);
-    LedOff(i);
+    LedOff(led);
 
-    i += 1;
+    step += 1;
   }
-  else if(i <= 13) {
-    int j = 6 - (i-8);
+  else if(step <= 7) {
+    led = 7 - 2 * (step-4);
 
-    LedOn(j);
+    LedOn(led);
     delay(500);
-    LedOff(j);
+    LedOff(led);
 
-    i += 1;
+    step += 1;
+  }
+  else if (step == 8) {
+    LedAllOn();
+    delay(500);
+
+    step += 1;
+  }
+  else if(step == 9) {
+    LedAllOff();
+    delay(500);
+
+    step += 1;
   }
   else {
-    i = 0;
+    step = 0;
   }
  
+}
+
+void blink_to_center() {
+
 }
 
 void LedOn(int iled) {
@@ -104,5 +143,27 @@ void LedAllOff() {
   for (int iled=0; iled<8; iled++) {
     digitalWrite(allPins[iled], LOW);
   }
+}
+
+void StartLedBlink(int iled, long interval) {
+ 
+  unsigned long currentMillis = millis();
+
+  if((ledState == HIGH) && (currentMillis - previousMillis >= interval))
+  {
+    ledState = LOW;
+    previousMillis = currentMillis;
+    digitalWrite(allPins[iled], ledState);
+  }
+  else if ((ledState == LOW) && (currentMillis - previousMillis >= interval))
+  {
+    ledState = HIGH;
+    previousMillis = currentMillis;
+    digitalWrite(allPins[iled], ledState);
+  }
+}
+
+void CheckLedBlink() {
+
 }
 

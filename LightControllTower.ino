@@ -18,7 +18,7 @@ struct LedControl {
   {.pin=blue_2,   .val=LOW, .blink=false, .prev=0, .interval=0}
 };
 
-unsigned long startAllBlink = 60000;
+unsigned long startAllBlink = 10000;
 bool waitAllBlink = true;
 
 void setup() {
@@ -30,27 +30,27 @@ void setup() {
     digitalWrite(Leds[i].pin, LOW);
   }
 
-  LedOn( 0 );
-  LedOff( 1 );
-  StartLedBlink( 2, 500 );
-  StartLedBlink( 3, 625 );
-  StartLedBlink( 4, 237 );
-  LedOff( 5 );
-  LedOn( 6 );
-  StartLedBlink( 7, 100 );
+  // LedOn( 0 );
+  // LedOff( 1 );
+  // StartLedBlink( 2, 500 );
+  // StartLedBlink( 3, 625 );
+  // StartLedBlink( 4, 237 );
+  // LedOff( 5 );
+  // LedOn( 6 );
+  // StartLedBlink( 7, 100 );
 
 }
 
 void loop() {
 
-  if (waitAllBlink && (millis() >= startAllBlink)) {
-    waitAllBlink = false;
+  // if (waitAllBlink && (millis() >= startAllBlink)) {
+  //   waitAllBlink = false;
 
-    LedAllOff();
-    StartAllLedBlink(500);
-  };
+  //   LedAllOff();
+  //   StartAllLedBlink(500);
+  // };
 
-  CheckAllLedBlink();
+  // CheckAllLedBlink();
 }
 
 void LedOn(int iled) {

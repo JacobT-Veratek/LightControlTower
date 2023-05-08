@@ -1,20 +1,33 @@
 //blink_up_down
 const int green_1 = 2, green_2 = 3, red_1 = 4, red_2 = 5, yellow_1 = 6, yellow_2 = 7, blue_1 = 8, blue_2 = 9;
-const uint8_t ledPins[8] = {green_1, green_2, red_1, red_2, yellow_1, yellow_2, blue_1, blue_2};
-uint8_t ledVal[8] = {LOW, LOW, LOW, LOW, LOW, LOW, LOW, LOW};
-bool ledBlink[8] = {false, false, false, false, false, false, false, false};
-unsigned long ledPrev[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-unsigned long ledInterval[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 
+struct LedControl {
+  const uint8_t pin;
+  uint8_t val;
+  bool blink;
+  unsigned long prev;
+  unsigned long interval;
+} Leds[8] {
+  {.pin=green_1,  .val=LOW, .blink=false, .prev=0, .interval=0},
+  {.pin=green_2,  .val=LOW, .blink=false, .prev=0, .interval=0},
+  {.pin=red_1,    .val=LOW, .blink=false, .prev=0, .interval=0},
+  {.pin=red_2,    .val=LOW, .blink=false, .prev=0, .interval=0},
+  {.pin=yellow_1, .val=LOW, .blink=false, .prev=0, .interval=0},
+  {.pin=yellow_2, .val=LOW, .blink=false, .prev=0, .interval=0},
+  {.pin=blue_1,   .val=LOW, .blink=false, .prev=0, .interval=0},
+  {.pin=blue_2,   .val=LOW, .blink=false, .prev=0, .interval=0}
+};
 
+unsigned long startAllBlink = 60000;
+bool waitAllBlink = true;
 
 void setup() {
 
   Serial.begin(9600);
 
   for(int i = 0; i < 8; i++){
-    pinMode(ledPins[i], OUTPUT);
-    digitalWrite(ledPins[i], LOW);
+    pinMode(Leds[i].pin, OUTPUT);
+    digitalWrite(Leds[i].pin, LOW);
   }
 
   LedOn( 0 );
@@ -25,25 +38,33 @@ void setup() {
   LedOff( 5 );
   LedOn( 6 );
   StartLedBlink( 7, 100 );
+
 }
 
 void loop() {
+
+  if (waitAllBlink && (millis() >= startAllBlink)) {
+    waitAllBlink = false;
+
+    LedAllOff();
+    StartAllLedBlink(500);
+  };
+
   CheckAllLedBlink();
 }
 
-
 void LedOn(int iled) {
-  ledVal[iled] = HIGH;
-  ledBlink[iled] = false;
+  Leds[iled].val = HIGH;
+  Leds[iled].blink = false;
 
-  digitalWrite(ledPins[iled], HIGH);
+  digitalWrite(Leds[iled].pin, HIGH);
 }
 
 void LedOff(int iled) {
-  ledVal[iled] = LOW;
-  ledBlink[iled] = false;
+  Leds[iled].val = LOW;
+  Leds[iled].blink = false;
 
-  digitalWrite(ledPins[iled], LOW);
+  digitalWrite(Leds[iled].pin, LOW);
 }
 
 void LedAllOn() {
@@ -59,20 +80,26 @@ void LedAllOff() {
 }
 
 void StartLedBlink(int iled, long interval) {
-  ledBlink[iled] = true;
-  ledPrev[iled] = millis();
-  ledInterval[iled] = interval;
+  Leds[iled].blink = true;
+  Leds[iled].prev = millis();
+  Leds[iled].interval = interval;
+}
+
+void StartAllLedBlink(long interval) {
+  for (int iled=0; iled<8; iled++){
+    StartLedBlink(iled, interval);
+  }
 }
 
 void CheckLedBlink(int iled) {
 
-  if (ledBlink[iled]) {
+  if (Leds[iled].blink) {
     unsigned long currentMillis = millis();
 
-    if ((currentMillis - ledPrev[iled]) >= ledInterval[iled]) {
-      ledVal[iled] = (ledVal[iled] == LOW) ? HIGH : LOW;
-      digitalWrite(ledPins[iled], ledVal[iled]);
-      ledPrev[iled] = currentMillis; 
+    if ((currentMillis - Leds[iled].prev) >= Leds[iled].interval) {
+      Leds[iled].val = (Leds[iled].val == LOW) ? HIGH : LOW;
+      digitalWrite(Leds[iled].pin, Leds[iled].val);
+      Leds[iled].prev = currentMillis; 
     }
   }
 }

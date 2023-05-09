@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <string.h>
+
 //blink_up_down
 const int green_1 = 2, green_2 = 3, red_1 = 4, red_2 = 5, yellow_1 = 6, yellow_2 = 7, blue_1 = 8, blue_2 = 9;
 
@@ -18,8 +21,8 @@ struct LedControl {
   {.pin=blue_2,   .val=LOW, .blink=false, .prev=0, .interval=0}
 };
 
-unsigned long startAllBlink = 10000;
-bool waitAllBlink = true;
+char cmdBuf[64];
+int cmdBufCount = 0;
 
 void setup() {
 
@@ -29,28 +32,23 @@ void setup() {
     pinMode(Leds[i].pin, OUTPUT);
     digitalWrite(Leds[i].pin, LOW);
   }
-
-  // LedOn( 0 );
-  // LedOff( 1 );
-  // StartLedBlink( 2, 500 );
-  // StartLedBlink( 3, 625 );
-  // StartLedBlink( 4, 237 );
-  // LedOff( 5 );
-  // LedOn( 6 );
-  // StartLedBlink( 7, 100 );
-
 }
 
 void loop() {
 
-  // if (waitAllBlink && (millis() >= startAllBlink)) {
-  //   waitAllBlink = false;
+  if (Serial.available() > 0) {
+    int byte = Serial.read();
+    if (byte == '\n') {
+      ProcessCommand();
+      cmdBufCount = 0;
+    }
+    else if(cmdBufCount < (sizeof(cmdBuf) - 1))  {
+      cmdBuf[cmdBufCount++] = byte;
+      cmdBuf[cmdBufCount] = '\0';
+    }
+  }
 
-  //   LedAllOff();
-  //   StartAllLedBlink(500);
-  // };
-
-  // CheckAllLedBlink();
+  CheckAllLedBlink();
 }
 
 void LedOn(int iled) {
@@ -107,5 +105,29 @@ void CheckLedBlink(int iled) {
 void CheckAllLedBlink() {
   for (int iled=0; iled<8; iled++) {
     CheckLedBlink(iled);
+  }
+}
+
+void ProcessCommand() {
+  Serial.print("cmdBuf=");
+  Serial.println(cmdBuf);
+
+  char * cmdStr = strtok (cmdBuf," ");
+  char * arg1Str = strtok (NULL, " ");
+  char * arg2Str = strtok (NULL, " ");
+
+  if (cmdStr != NULL){
+    Serial.print("cmdStr=");
+    Serial.println(cmdStr);
+  }
+
+  if (arg1Str != NULL){
+    Serial.print("arg1Str=");
+    Serial.println(arg1Str);
+  }
+
+  if (arg2Str != NULL){
+    Serial.print("arg2Str=");
+    Serial.println(arg2Str);
   }
 }

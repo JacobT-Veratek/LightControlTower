@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <string.h>
-
 //blink_up_down
 const int green_1 = 2, green_2 = 3, red_1 = 4, red_2 = 5, yellow_1 = 6, yellow_2 = 7, blue_1 = 8, blue_2 = 9;
 
@@ -130,4 +127,87 @@ void ProcessCommand() {
     Serial.print("arg2Str=");
     Serial.println(arg2Str);
   }
+//--------------------------------------------------------------------------------------------------------------
+  if (0 == strcmp("On", cmdStr))
+  {
+    if(arg1Str != NULL){
+      if(0 == strcmp("all", arg1Str)){
+        LedAllOn();
+      }
+      else if (CheckValidNumber(arg1Str) == true){
+        LedOn(atoi(arg1Str));
+      }
+      else{
+        Serial.println("Invalid Argument");
+      }
+
+    }
+    else{
+      Serial.println("Must define variables");
+    }
+  }
+//--------------------------------------------------------------------------------------------------------------
+  else if (0 == strcmp("Off", cmdStr))
+  {
+    if(arg1Str != NULL){
+      if(0 == strcmp("all", arg1Str)){
+        LedAllOff();
+      }
+      else if (CheckValidNumber(arg1Str)){
+        LedOff(atoi(arg1Str));
+      }
+      else{
+        Serial.println("Invalid Argument");
+      }
+
+    }
+    else{
+      Serial.println("Must define variables");
+    }
+  }
+//--------------------------------------------------------------------------------------------------------------
+  else if (0 == strcmp("Blink", cmdStr))
+  {
+    if(arg1Str != NULL){
+      if(0 == strcmp("all", arg1Str)){
+        if (CheckValidNumber(arg2Str)){
+          StartAllLedBlink(atoi(arg2Str));
+        }
+        else {
+          Serial.println("Invalid Argument");
+        }
+      }
+      else if (CheckValidNumber(arg1Str)){
+        StartLedBlink(atoi(arg1Str), atoi(arg2Str));
+      }
+      else{
+        Serial.println("Invalid Argument");
+      }
+    }
+    else{
+      Serial.println("Must define variables");
+    }
+  }
+  else
+  {
+    Serial.print("Command not found");
+  }
 }
+
+
+bool CheckValidNumber( char *argstr ) {
+  bool valid = false;
+
+  for(int i = 0; argstr[i]!=0; i++){
+    if( '0' <= argstr[i] && argstr[i] <= '9'){
+      valid = true;
+    }
+    else {
+      valid = false;
+      break;
+    }
+  }
+
+  return valid;
+}
+// output = strcmp(string1, string2);

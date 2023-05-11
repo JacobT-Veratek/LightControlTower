@@ -86,16 +86,6 @@ void StartAllLedBlink(long interval) {
   }
 }
 
-// void SimultaneousStart() {
-//   for (int iled=0; iled<0; iled++) {
-//     StartLedBlink(iled, Leds[iled].interval);
-//   }
-// }
-
-// void ObainAllInterval() {
-  
-// }
-
 void CheckLedBlink(int iled) {
   if (Leds[iled].blink) {
     unsigned long currentMillis = millis();
@@ -196,25 +186,6 @@ void ProcessCommand() {
     else{
       Serial.println("Must define variables");
     }
-  }
-//--------------------------------------------------------------------------------------------------------------
-  else if (0 == strcmp("simul", cmdStr))
-  {
-    if (arg1Str != NULL){
-      if (0 == strcmp("start", cmdStr)) {
-        // SimultaneousStart();
-      }
-      else{
-        Serial.println("Invalid Argument");
-      }
-    }
-    else{
-      Serial.println("Must define variables");
-    }
-  }
-  else
-  {
-    Serial.print("Command not found");
   }
 }
 

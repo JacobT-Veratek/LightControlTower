@@ -86,11 +86,15 @@ void StartAllLedBlink(long interval) {
   }
 }
 
-void simultaneous_start() {
-  for (int iled=0; iled<0; iled++) {
-    StartLedBlink(iled, leds[iled].interval);
-  }
-}
+// void SimultaneousStart() {
+//   for (int iled=0; iled<0; iled++) {
+//     StartLedBlink(iled, Leds[iled].interval);
+//   }
+// }
+
+// void ObainAllInterval() {
+  
+// }
 
 void CheckLedBlink(int iled) {
   if (Leds[iled].blink) {
@@ -196,9 +200,9 @@ void ProcessCommand() {
 //--------------------------------------------------------------------------------------------------------------
   else if (0 == strcmp("simul", cmdStr))
   {
-    if (argstr != NULL){
+    if (arg1Str != NULL){
       if (0 == strcmp("start", cmdStr)) {
-        // simultaneous_start();
+        // SimultaneousStart();
       }
       else{
         Serial.println("Invalid Argument");
